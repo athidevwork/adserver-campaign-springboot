@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.adserver.campaign.domain.Ad;
 import com.adserver.campaign.service.AdService;
 
-@Path("/")
+@Path("/ad")
+@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+@Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class CampaignResource {
 	@Autowired
 	private ResourceLoader resourceLoader;
@@ -54,7 +56,7 @@ public class CampaignResource {
 	}
 
 	@GET
-	@Path("/ad/{partner}")
+	@Path("/{partner}")
 	public Response getAd(@PathParam("partner") String partner) {
         System.out.println("Fetching User with id " + partner);
         Ad ad = adService.getAdByPartner(partner);
@@ -66,8 +68,8 @@ public class CampaignResource {
     }
 	
 	@POST
-	@Path("/ad")
-	public Response createAd (Ad ad) {
+	@Path("/{partner}")
+	public Response createAd (@PathParam("partner") String partner, Ad ad) {
         System.out.println("Creating Ad for partner " + ad.getPartnerId());
  
         if (adService.doesAdExist(ad) {
@@ -75,50 +77,51 @@ public class CampaignResource {
             return Response.ok().entity("Ad for the partner already exists.").build();
         }
  
-        adService.saveAd(ad);
- 
-        return Response.ok().build();
+        /*adService.saveAd(ad);
+        return Response.ok().build();*/
+        return adService.saveAd(ad);
     }
 	
 	@PUT
-	@Path("/ad/{id}")
-	public Response updateAd (@PathParam("id") int id) {
+	@Path("/{partner}")
+	public Response updateAd (@PathParam("partner") String partner) {
 		
-        System.out.println("Updating Ad " + id);
+        System.out.println("Updating Ad for partner" + partner);
          
-        Ad currentAd = adService.findById(id);
+        Ad currentAd = adService.findById(partner);
          
         if (currentAd==null) {
-            System.out.println("Ad with id " + id + " not found");
+            System.out.println("Ad for partner " + partner + " not found");
             return Response.noContent().build();
         }
          
-        adService.updateAd(currentAd);
-        return Response.ok().build();
+        /*adService.updateAd(currentAd);
+        return Response.ok().build();*/
+        return adService.updateAd(currentAd);
     }
 	
 	@DELETE
-	@Path("/ad/{id}")
-	public Response deleteAd(@PathParam("id") int id) {
-        System.out.println("Fetching & Deleting User with id " + id);
+	@Path("/{partner}")
+	public Response deleteAd(@PathParam("partner") String partner) {
+        System.out.println("Fetching & Deleting Ad for partner " + partner);
  
-        Ad ad = adService.findById(id);
+        Ad ad = adService.findById(partner);
         if (ad == null) {
-            System.out.println("Unable to delete. User with id " + id + " not found");
+            System.out.println("Unable to delete. Ad for partner " + partner + " not found");
             return Response.noContent().build();
         }
  
-        adService.deleteUserById(id);
-        return Response.ok().build();
+        return adService.deleteUserById(id);
+        //return Response.ok().build();
     }
 	
 	@DELETE
-	@Path("/ad")
+	@Path("/deleteAll")
 	public Response deleteAllAdCampaigns() {
         System.out.println("Deleting All Ad Campaigns");
  
-        adService.deleteAllCampaigns();
-        return Response.noContent().build();
+        return adService.deleteAllCampaigns();
+        //return Response.noContent().build();
     }
  
 	/**
