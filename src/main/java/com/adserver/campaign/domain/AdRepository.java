@@ -3,13 +3,12 @@
  */
 package com.adserver.campaign.domain;
 
-import org.springframework.data.repository.CrudRepository;
-
 /**
  * @author Athi
  *
  */
-public interface AdRepository extends CrudRepository<Ad, Integer> {
-	Ad getByPartnerId (String partner);
+public interface AdRepository {
+	Ad getAdByPartner (String partner);
 	//List<Ad> getAllCampaigns();
+	boolean saveAd(Ad ad);
 }

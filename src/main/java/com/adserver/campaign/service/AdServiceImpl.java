@@ -3,9 +3,17 @@
  */
 package com.adserver.campaign.service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
+
+import javax.ws.rs.core.Response.Status;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.adserver.campaign.domain.Ad;
+import com.adserver.campaign.domain.AdRepository;
 
 /**
  * @author User
@@ -13,6 +21,11 @@ import com.adserver.campaign.domain.Ad;
  */
 public class AdServiceImpl implements AdService {
 
+	Logger logger = Logger.getLogger("AdServiceImpl");
+	
+	@Autowired
+	AdRepository adRepository;
+	
 	/* (non-Javadoc)
 	 * @see com.adserver.campaign.service.AdService#listAllAdCampaigns()
 	 */
@@ -27,23 +40,32 @@ public class AdServiceImpl implements AdService {
 	 */
 	@Override
 	public Ad getAdByPartner(String partner) {
-		// TODO Auto-generated method stub
-		return null;
+		return adRepository.getAdByPartner(partner);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.adserver.campaign.service.AdService#saveAd(com.adserver.campaign.domain.Ad)
-	 */
-	/**
-	 * saveAd - Save an Ad for a partner
-	 */
 	@Override
-	public Ad saveAd(Ad ad) {
-
-        /*policy.setPolicyNumberId(policies.size() + 1);
-        policies.put(policy.getPolicyNo(), policy);*/
-
-        return ad;
+	public boolean isAnAdActiveForPartner(String partner) {
+		Ad currentAd = getAdByPartner(partner);
+		LocalDateTime currentDate = LocalDateTime.now();
+		LocalDateTime creationDate = currentAd.getCreationTime();
+		
+		Duration duration = Duration.between(creationDate, currentDate);
+		if (duration.getSeconds() > currentAd.getDuration())  
+			return false;
+		else
+			return true;
 	}
-
+	
+	@Override
+	public Status saveAd(String partner, Ad ad) {		
+        if (isAnAdActiveForPartner(partner)) {
+            logger.info("An active Ad  for partner " + ad.getPartner() + " already exists.");
+            return Status.CONFLICT;
+        }
+        
+		if (adRepository.saveAd(ad))
+			return Status.CREATED;
+		else
+			return Status.INTERNAL_SERVER_ERROR;
+	}	
 }

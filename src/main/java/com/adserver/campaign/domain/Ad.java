@@ -3,30 +3,26 @@
  */
 package com.adserver.campaign.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 /**
  * @author Athi
  *
  */
-@Entity
 public class Ad {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	private String partnerId;
-	private int duration;
+	private String partner;
+	private long duration;
+	private LocalDateTime creationTime;
 	private String content;
 	
-	public Ad(long id, String partnerId, int duration, String content) {
+	public Ad(long id, String partner, int duration, String content) {
 		super();
 		this.id = id;
-		this.partnerId = partnerId;
+		this.partner = partner;
 		this.duration = duration;
 		this.content = content;
+		this.creationTime = LocalDateTime.now();
 	}
 	public long getId() {
 		return id;
@@ -34,17 +30,23 @@ public class Ad {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getPartnerId() {
-		return partnerId;
+	public String getPartner() {
+		return partner;
 	}
-	public void setPartnerId(String partnerId) {
-		this.partnerId = partnerId;
+	public void setPartner(String partner) {
+		this.partner = partner;
 	}
-	public int getDuration() {
+	public long getDuration() {
 		return duration;
 	}
-	public void setDuration(int duration) {
+	public void setDuration(long duration) {
 		this.duration = duration;
+	}
+	public LocalDateTime getCreationTime() {
+		return creationTime;
+	}
+	public void setCreationTime(LocalDateTime creationTime) {
+		this.creationTime = creationTime;
 	}
 	public String getContent() {
 		return content;
@@ -54,6 +56,6 @@ public class Ad {
 	}
 	@Override
 	public String toString() {
-		return "Ad [id=" + id + ", partnerId=" + partnerId + ", duration=" + duration + ", content=" + content + "]";
+		return "Ad [id=" + id + ", partner=" + partner + ", duration=" + duration + ", content=" + content + "]";
 	}
 }

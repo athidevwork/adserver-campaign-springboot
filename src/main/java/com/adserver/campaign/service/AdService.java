@@ -5,6 +5,8 @@ package com.adserver.campaign.service;
 
 import java.util.List;
 
+import javax.ws.rs.core.Response.Status;
+
 import com.adserver.campaign.domain.Ad;
 
 /**
@@ -16,5 +18,8 @@ public interface AdService {
 
     Ad getAdByPartner(String partner);
 
-    Ad saveAd(Ad ad);
+    Status saveAd(String partner, Ad ad);
+
+	boolean isAnAdActiveForPartner(String partner);
+
 }

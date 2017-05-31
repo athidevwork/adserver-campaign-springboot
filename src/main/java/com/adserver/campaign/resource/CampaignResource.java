@@ -3,21 +3,21 @@ package com.adserver.campaign.resource;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.jetty.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.adserver.campaign.domain.Ad;
@@ -70,19 +70,18 @@ public class CampaignResource {
 	@POST
 	@Path("/{partner}")
 	public Response createAd (@PathParam("partner") String partner, Ad ad) {
-        System.out.println("Creating Ad for partner " + ad.getPartnerId());
- 
-        if (adService.doesAdExist(ad) {
-            logger.info("An Ad  with partner " + ad.getPartnerId() + " already exists.");
-            return Response.ok().entity("Ad for the partner already exists.").build();
-        }
- 
-        /*adService.saveAd(ad);
-        return Response.ok().build();*/
-        return adService.saveAd(ad);
+        System.out.println("Creating Ad for partner " + ad.getPartner());
+  
+        Status statusInfo = adService.saveAd(partner, ad);
+        if (statusInfo == Status.CREATED)
+        	return Response.ok().entity(adService.getAdByPartner(partner)).build();
+        else if (statusInfo == Status.CONFLICT)
+        	return Response.ok().entity("Active Ad for the partner already exists.").build();
+        else
+        	return Response.serverError().entity("Server Error Occurred").build();
     }
 	
-	@PUT
+	/*@PUT
 	@Path("/{partner}")
 	public Response updateAd (@PathParam("partner") String partner) {
 		
@@ -95,8 +94,6 @@ public class CampaignResource {
             return Response.noContent().build();
         }
          
-        /*adService.updateAd(currentAd);
-        return Response.ok().build();*/
         return adService.updateAd(currentAd);
     }
 	
@@ -122,7 +119,7 @@ public class CampaignResource {
  
         return adService.deleteAllCampaigns();
         //return Response.noContent().build();
-    }
+    }*/
  
 	/**
 	 * {
