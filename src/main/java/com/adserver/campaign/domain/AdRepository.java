@@ -8,7 +8,9 @@ package com.adserver.campaign.domain;
  *
  */
 public interface AdRepository {
-	Ad getAdByPartner (String partner);
-	//List<Ad> getAllCampaigns();
+	List<Ad> listAllAdCampaigns();
+	Ad getAdByPartner(String partner);	
 	boolean saveAd(Ad ad);
+	boolean deleteAd(Ad ad);
+	boolean deleteAllAdCampaigns();
 }

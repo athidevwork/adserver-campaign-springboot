@@ -23,19 +23,4 @@ public class AdserverCampaignApplication {
 	    jettyContainer.setContextPath("/adserver");
 	    return jettyContainer;
 	}
-	
-	/*@Bean
-	public UndertowEmbeddedServletContainerFactory embeddedServletContainerFactory() {
-	    UndertowEmbeddedServletContainerFactory factory = 
-	      new UndertowEmbeddedServletContainerFactory();
-	     
-	    factory.addBuilderCustomizers(new UndertowBuilderCustomizer() {
-	        @Override
-	        public void customize(io.undertow.Undertow.Builder builder) {
-	            builder.addHttpListener(8081, "0.0.0.0");
-	        }
-	    });
-	     
-	    return factory;
-	}*/
 }

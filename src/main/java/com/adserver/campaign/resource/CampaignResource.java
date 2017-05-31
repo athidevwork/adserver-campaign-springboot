@@ -27,8 +27,6 @@ import com.adserver.campaign.service.AdService;
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class CampaignResource {
-	@Autowired
-	private ResourceLoader resourceLoader;
 	
 	@Autowired
 	private AdService adService;
@@ -36,10 +34,10 @@ public class CampaignResource {
 	@RequestMapping("/")
 	@ResponseBody
 	public String home() {
-		return "Got into CampaignController";
+		return "Got into CampaignResource";
 	}
 
-	Logger logger = Logger.getLogger("CampaignController");
+	Logger logger = Logger.getLogger("CampaignResource");
 	
 	/** 
 	 * listAllAdCampaigns - List all the campaigns.
@@ -81,20 +79,18 @@ public class CampaignResource {
         	return Response.serverError().entity("Server Error Occurred").build();
     }
 	
-	/*@PUT
+	@PUT
 	@Path("/{partner}")
-	public Response updateAd (@PathParam("partner") String partner) {
-		
-        System.out.println("Updating Ad for partner" + partner);
-         
-        Ad currentAd = adService.findById(partner);
-         
-        if (currentAd==null) {
-            System.out.println("Ad for partner " + partner + " not found");
-            return Response.noContent().build();
-        }
-         
-        return adService.updateAd(currentAd);
+	public Response updateAd (@PathParam("partner") String partner) {  
+        Status statusInfo = adService.updateAd(partner, currentAd);
+        
+        //TODO
+        if (statusInfo == Status.CREATED)
+        	return Response.ok().entity(adService.getAdByPartner(partner)).build();
+        else if (statusInfo == Status.CONFLICT)
+        	return Response.noContent().build();
+        else
+        	return Response.serverError().entity("Server Error Occurred").build();        
     }
 	
 	@DELETE
@@ -102,34 +98,28 @@ public class CampaignResource {
 	public Response deleteAd(@PathParam("partner") String partner) {
         System.out.println("Fetching & Deleting Ad for partner " + partner);
  
-        Ad ad = adService.findById(partner);
-        if (ad == null) {
-            System.out.println("Unable to delete. Ad for partner " + partner + " not found");
-            return Response.noContent().build();
-        }
- 
-        return adService.deleteUserById(id);
-        //return Response.ok().build();
+        Status statusInfo = adService.deleteAd(partner);
+        //TODO
+        if (statusInfo == Status.CREATED)
+        	return Response.ok().entity(adService.getAdByPartner(partner)).build();
+        else if (statusInfo == Status.CONFLICT)
+        	return Response.noContent().build();
+        else
+        	return Response.serverError().entity("Server Error Occurred").build();   
     }
 	
 	@DELETE
-	@Path("/deleteAll")
+	@Path("/init")
 	public Response deleteAllAdCampaigns() {
         System.out.println("Deleting All Ad Campaigns");
  
-        return adService.deleteAllCampaigns();
-        //return Response.noContent().build();
-    }*/
- 
-	/**
-	 * {
-
-"partner_id": "unique_string_representing_partner',
-
-"duration": "int_representing_campaign_duration_in_seconds_from_now"
-
-"ad_content": "string_of_content_to_display_as_ad"
-
-}
-	 */
+        Status statusInfo =  adService.deleteAllCampaigns();
+        //TODO
+        if (statusInfo == Status.CREATED)
+        	return Response.ok().entity(adService.getAdByPartner(partner)).build();
+        else if (statusInfo == Status.CONFLICT)
+        	return Response.noContent().build();
+        else
+        	return Response.serverError().entity("Server Error Occurred").build();  
+    }
 }

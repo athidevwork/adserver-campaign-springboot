@@ -26,18 +26,11 @@ public class AdServiceImpl implements AdService {
 	@Autowired
 	AdRepository adRepository;
 	
-	/* (non-Javadoc)
-	 * @see com.adserver.campaign.service.AdService#listAllAdCampaigns()
-	 */
 	@Override
 	public List<Ad> listAllAdCampaigns() {
-		// TODO Auto-generated method stub
-		return null;
+		return adRepository.listAllAdCampaigns();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.adserver.campaign.service.AdService#getProductByPartner(java.lang.String)
-	 */
 	@Override
 	public Ad getAdByPartner(String partner) {
 		return adRepository.getAdByPartner(partner);
@@ -68,4 +61,44 @@ public class AdServiceImpl implements AdService {
 		else
 			return Status.INTERNAL_SERVER_ERROR;
 	}	
+	
+	@Override
+	public Status updateAd(String partner, Ad ad) {
+        Ad currentAd = adService.getAdByPartner(partner);
+        
+        if (currentAd==null) {
+        	logger.info("Ad for partner " + partner + " not found");
+            return Status.CONFLICT;
+        }
+        
+        //TODO
+		if (adRepository.updateAd(ad))
+			return Status.CREATED;
+		else
+			return Status.INTERNAL_SERVER_ERROR;        
+	}
+	
+	@Override
+	public Status deleteAd(String partner, Ad ad) {
+        Ad currentAd = adService.getAdByPartner(partner);
+        if (currentAd == null) {
+        	logger.info("Unable to delete. Ad for partner " + partner + " not found");
+            return Response.noContent().build();
+        }
+        
+        //TODO
+		if (adRepository.deleteAd(ad))
+			return Status.CREATED;
+		else
+			return Status.INTERNAL_SERVER_ERROR;  
+	}
+	
+	@Override
+	public Status deleteAllCampaigns() {
+		 //TODO
+		if (adRepository.deleteAllAdCampaigns())
+			return Status.CREATED;
+		else
+			return Status.INTERNAL_SERVER_ERROR;  
+	}
 }
