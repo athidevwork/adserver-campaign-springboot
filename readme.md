@@ -1,6 +1,6 @@
 
 
-##TEST Adserver
+## TEST Adserver
 
 >curl http://localhost:8081/adserver/info
 
@@ -8,11 +8,11 @@
 >curl http://localhost:8081/ad
 
 
-##GITHUB ASSESSMENT FOR SMART INTERNET PROJECT:
+## GITHUB ASSESSMENT FOR SMART INTERNET PROJECT:
 
 Git Assessment:
 
-###Simple Ad Server
+### Simple Ad Server
 
 -------------------------------------
 
@@ -20,7 +20,7 @@ This doc contains requirements for a coding exercise that involves building a si
 
  
 
-####Overview
+#### Overview
 
 --------
 
@@ -97,4 +97,4 @@ You will be building a simple web application that allows a user to create ad ca
 
      * Add support for multiple ad campaigns per partner.
 
-##END OF GITHUB ASSESSMENT
+## END OF GITHUB ASSESSMENT
