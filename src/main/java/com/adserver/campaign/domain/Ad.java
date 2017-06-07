@@ -4,25 +4,45 @@
 package com.adserver.campaign.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Athi
  *
  */
+@XmlRootElement
 public class Ad {
 	private long id;
 	private String partner;
 	private long duration;
-	private LocalDateTime creationTime;
 	private String content;
+	@Autowired(required=false)
+	private String creationTime;
+	@Autowired(required=false)
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	
-	public Ad(long id, String partner, int duration, String content) {
+	public Ad() {
+		super();
+	}
+	public Ad(String partner, long duration, String content) {
+		super();
+		this.id = 0;
+		this.partner = partner;
+		this.duration = duration;
+		this.content = content;
+		this.creationTime = LocalDateTime.now().format(formatter);
+	}
+	public Ad(long id, String partner, long duration, String content) {
 		super();
 		this.id = id;
 		this.partner = partner;
 		this.duration = duration;
 		this.content = content;
-		this.creationTime = LocalDateTime.now();
+		this.creationTime = LocalDateTime.now().format(formatter);
 	}
 	public long getId() {
 		return id;
@@ -42,10 +62,10 @@ public class Ad {
 	public void setDuration(long duration) {
 		this.duration = duration;
 	}
-	public LocalDateTime getCreationTime() {
+	public String getCreationTime() {
 		return creationTime;
 	}
-	public void setCreationTime(LocalDateTime creationTime) {
+	public void setCreationTime(String creationTime) {
 		this.creationTime = creationTime;
 	}
 	public String getContent() {
@@ -56,6 +76,8 @@ public class Ad {
 	}
 	@Override
 	public String toString() {
-		return "Ad [id=" + id + ", partner=" + partner + ", duration=" + duration + ", content=" + content + "]";
+		return "Ad [id=" + id + ", " + (partner != null ? "partner=" + partner + ", " : "") + "duration=" + duration
+				+ ", " + (creationTime != null ? "creationTime=" + creationTime + ", " : "")
+				+ (content != null ? "content=" + content : "") + "]";
 	}
 }

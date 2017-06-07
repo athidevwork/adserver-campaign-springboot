@@ -3,27 +3,34 @@
  */
 package com.adserver.campaign.domain;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
+
+import org.springframework.stereotype.Component;
 
 /**
  * @author Athi
  *
  */
+@Component
 public class AdRepositoryImpl implements AdRepository {
 
 	private ConcurrentHashMap<String, Ad> campaign = new ConcurrentHashMap<String, Ad>();
 	Logger logger = Logger.getLogger("AdRepositoryImpl");
 	
 	@Override
-	public List<Ad> listAllAdCampaigns() {
+	public Collection<Ad> listAllAdCampaigns() {
 		if (campaign.size() == 0) {
 			//create some test ad's
 			logger.info("Adding some sample Ad's");
-			campaign.putIdAbsent(new Ad(1, 'Comcast', int 180, 'Comcast Ad Content1'));
-			campaign.putIdAbsent(new Ad(1, 'Verizon', int 150, 'Verizon Ad Content1'));
-			campaign.putIdAbsent(new Ad(1, 'Time Warner', int 120, 'Time WarnerAd Content1'));
+			campaign.putIfAbsent("Comcast", new Ad(campaign.size() + 1, "Comcast", 180, "Comcast First Ad Content"));
+			campaign.putIfAbsent("Verizon", new Ad(campaign.size() + 1, "Verizon", 150, "Verizon First Ad Content"));
+			campaign.putIfAbsent("Time Warner", new Ad(campaign.size() + 1, "Time Warner", 120, "Time Warner Frist Ad Content"));
 		}
-		return campaign.getValues();
+		return campaign.values();
 	}
 	
 	@Override
@@ -32,34 +39,41 @@ public class AdRepositoryImpl implements AdRepository {
 	}
 
 	@Override
-	public boolean saveAd(Ad ad) {
-		logger.info("Save Ad : " ad.toString());
-		ad.setId(campaign.size() + 1);
-		campaign.putIfAbsent(ad.getPartner(), ad);
-		return true;
+	public Ad saveAd(Ad ad) {
+		long duration = Long.valueOf(ad.getDuration());
+		long id = Long.valueOf(campaign.size() + 1);
+		Ad newAd = new Ad(id, ad.getPartner(), duration, ad.getContent());
+		logger.info("Saved Ad : " + newAd.toString());		
+		campaign.putIfAbsent(ad.getPartner(), newAd);
+		return newAd;
 	}
 
 	@Override
-	public boolean updateAd(Ad ad) {
-		logger.info("Update Ad : " ad.toString());
-		Ad currentAd = campaign.getAdByPartner(partner);
-		//update currentAd with the new ad passed along 
+	public Ad updateAd(String partner, Ad ad) {
+		Ad currentAd = getAdByPartner(partner);
+		//update currentAd with the new ad passed along 		
 		currentAd.setContent(ad.getContent());
 		currentAd.setDuration(ad.getDuration());
-		currentAd.setCreationTime(ad.getCreationTime());
-		campaign.put(partner, ad);
-		return true;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		currentAd.setCreationTime(LocalDateTime.now().format(formatter));
+		logger.info("Updated Ad : " + ad.toString());		
+		campaign.put(partner, currentAd);
+		return currentAd;
 	}	
 	
 	@Override
-	public boolean deleteAd(Ad ad) {
-		logger.info("Delete Ad : " ad.toString());
-		return campaign.remove(ad.getPartner());
+	public boolean deleteAd(String partner, Ad ad) {
+		logger.info("Deleting Ad : " + ad.toString());
+		return campaign.remove(ad.getPartner()) != null;
 	}	
 	
 	@Override
 	public boolean deleteAllAdCampaigns() {
-		logger.info("Delete All Ad campaigns : " ad.toString());
+		logger.info("Deleting All Ad campaigns");
 		campaign.clear();
+		if (campaign.isEmpty())
+			return true;
+		else
+			return false;
 	}
 }

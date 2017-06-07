@@ -3,7 +3,7 @@
  */
 package com.adserver.campaign.service;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -14,13 +14,13 @@ import com.adserver.campaign.domain.Ad;
  *
  */
 public interface AdService {
-    List<Ad> listAllAdCampaigns();
+    Collection<Ad> listAllAdCampaigns();
 
     Ad getAdByPartner(String partner);
 
-    Status saveAd(String partner, Ad ad);
+    Ad saveAd(Ad ad);
     
-    Status updateAd(String partner, Ad ad);
+    Ad updateAd(String partner, Ad ad);
     
     Status deleteAd(String partner, Ad ad);
     

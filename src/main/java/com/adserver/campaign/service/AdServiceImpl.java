@@ -5,29 +5,32 @@ package com.adserver.campaign.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.adserver.campaign.domain.Ad;
-import com.adserver.campaign.domain.AdRepository;
+import com.adserver.campaign.domain.AdRepositoryImpl;
 
 /**
  * @author User
  *
  */
+@Component
 public class AdServiceImpl implements AdService {
 
 	Logger logger = Logger.getLogger("AdServiceImpl");
 	
 	@Autowired
-	AdRepository adRepository;
+	AdRepositoryImpl adRepository;
 	
 	@Override
-	public List<Ad> listAllAdCampaigns() {
+	public Collection<Ad> listAllAdCampaigns() {
 		return adRepository.listAllAdCampaigns();
 	}
 
@@ -39,65 +42,51 @@ public class AdServiceImpl implements AdService {
 	@Override
 	public boolean isAnAdActiveForPartner(String partner) {
 		Ad currentAd = getAdByPartner(partner);
-		LocalDateTime currentDate = LocalDateTime.now();
-		LocalDateTime creationDate = currentAd.getCreationTime();
-		
-		Duration duration = Duration.between(creationDate, currentDate);
-		if (duration.getSeconds() > currentAd.getDuration())  
-			return false;
-		else
-			return true;
+		if (currentAd != null) {
+			LocalDateTime currentDate = LocalDateTime.now();
+	
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	        LocalDateTime creationDate = LocalDateTime.parse(currentAd.getCreationTime(), formatter);
+			
+			Duration duration = Duration.between(creationDate, currentDate);
+			if (duration.getSeconds() > currentAd.getDuration())  
+				return false;
+			else
+				return true;
+		}
+		return false;
 	}
 	
 	@Override
-	public Status saveAd(String partner, Ad ad) {		
-        if (isAnAdActiveForPartner(partner)) {
-            logger.info("An active Ad  for partner " + ad.getPartner() + " already exists.");
-            return Status.CONFLICT;
-        }
-        
-		if (adRepository.saveAd(ad))
-			return Status.CREATED;
+	public Ad saveAd(Ad ad) {
+        Ad createdAd = adRepository.saveAd(ad);
+		if (createdAd != null)
+			return createdAd;
 		else
-			return Status.INTERNAL_SERVER_ERROR;
+			return null;
 	}	
 	
 	@Override
-	public Status updateAd(String partner, Ad ad) {
-        Ad currentAd = adService.getAdByPartner(partner);
-        
-        if (currentAd==null) {
-        	logger.info("Ad for partner " + partner + " not found");
-            return Status.CONFLICT;
-        }
-        
-        //TODO
-		if (adRepository.updateAd(ad))
-			return Status.CREATED;
+	public Ad updateAd(String partner, Ad ad) {        
+        Ad updatedAd = adRepository.updateAd(partner, ad);
+		if (updatedAd != null)
+			return updatedAd;
 		else
-			return Status.INTERNAL_SERVER_ERROR;        
+			return null;        
 	}
 	
 	@Override
-	public Status deleteAd(String partner, Ad ad) {
-        Ad currentAd = adService.getAdByPartner(partner);
-        if (currentAd == null) {
-        	logger.info("Unable to delete. Ad for partner " + partner + " not found");
-            return Response.noContent().build();
-        }
-        
-        //TODO
-		if (adRepository.deleteAd(ad))
-			return Status.CREATED;
+	public Status deleteAd(String partner, Ad ad) {        
+		if (adRepository.deleteAd(partner, ad))
+			return Status.NO_CONTENT;
 		else
 			return Status.INTERNAL_SERVER_ERROR;  
 	}
 	
 	@Override
 	public Status deleteAllCampaigns() {
-		 //TODO
 		if (adRepository.deleteAllAdCampaigns())
-			return Status.CREATED;
+			return Status.NO_CONTENT;
 		else
 			return Status.INTERNAL_SERVER_ERROR;  
 	}

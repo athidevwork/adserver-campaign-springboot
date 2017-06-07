@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.example</groupId>
-	<artifactId>adserver-campaign</artifactId>
+	<artifactId>adserver-campaign-springboot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -40,6 +40,10 @@
 	      </exclusion>
       </exclusions>			
 		</dependency>
+		<dependency>
+		  <groupId>org.springframework.boot</groupId>
+		  <artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
     <!-- JERSEY -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -49,6 +53,10 @@
 		   <groupId>org.springframework.boot</groupId>
 		   <artifactId>spring-boot-starter-jetty</artifactId>
 		</dependency>
+		<dependency>
+		        <groupId>com.fasterxml.jackson.dataformat</groupId>
+		        <artifactId>jackson-dataformat-xml</artifactId>
+		</dependency>				
 <!--     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-data-rest</artifactId>
@@ -92,6 +100,19 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+<!-- 				<configuration>
+					<transformers>
+				    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+				        <resource>META-INF/spring.handlers</resource>
+				    </transformer>
+				    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+				        <resource>META-INF/spring.schemas</resource>
+				    </transformer>
+				    <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+				        <resource>META-INF/spring.factories</resource>
+				    </transformer>
+					</transformers>
+        </configuration> -->
 			</plugin>
 		</plugins>
 	</build>
