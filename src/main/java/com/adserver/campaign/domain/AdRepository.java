@@ -10,6 +10,7 @@ import java.util.Collection;
  *
  */
 public interface AdRepository {
+	void createCampaign();
 	Collection<Ad> listAllAdCampaigns();
 	Ad getAdByPartner(String partner);	
 	Ad saveAd(Ad ad);

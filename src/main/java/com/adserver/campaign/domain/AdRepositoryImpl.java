@@ -22,14 +22,17 @@ public class AdRepositoryImpl implements AdRepository {
 	Logger logger = Logger.getLogger("AdRepositoryImpl");
 	
 	@Override
-	public Collection<Ad> listAllAdCampaigns() {
+	public void createCampaign() {
 		if (campaign.size() == 0) {
-			//create some test ad's
 			logger.info("Adding some sample Ad's");
 			campaign.putIfAbsent("Comcast", new Ad(campaign.size() + 1, "Comcast", 180, "Comcast First Ad Content"));
 			campaign.putIfAbsent("Verizon", new Ad(campaign.size() + 1, "Verizon", 150, "Verizon First Ad Content"));
-			campaign.putIfAbsent("Time Warner", new Ad(campaign.size() + 1, "Time Warner", 120, "Time Warner Frist Ad Content"));
-		}
+			campaign.putIfAbsent("Time Warner", new Ad(campaign.size() + 1, "Time Warner", 120, "Time Warner First Ad Content"));
+		}		
+	}
+	
+	@Override
+	public Collection<Ad> listAllAdCampaigns() {
 		return campaign.values();
 	}
 	
@@ -64,7 +67,11 @@ public class AdRepositoryImpl implements AdRepository {
 	@Override
 	public boolean deleteAd(String partner, Ad ad) {
 		logger.info("Deleting Ad : " + ad.toString());
-		return campaign.remove(ad.getPartner()) != null;
+		campaign.remove(ad.getPartner());
+		if (campaign.containsKey(ad.getPartner()))
+			return false;
+		else
+			return true;
 	}	
 	
 	@Override

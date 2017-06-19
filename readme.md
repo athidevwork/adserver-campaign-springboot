@@ -1,3 +1,11 @@
+adserver-cmapaign-springboot is a spring boot enterprise application that will expose restful services for managing ad campaigns.
+
+## To Build And run Adserver
+
+>***./mvnw -U clean package*** will build and package the adserver.
+
+>***./runServer.sh*** - runs the server in normal mode.
+>***./runServer.sh debug*** - runs server in remote debug mode.
 
 
 ## TEST Adserver
@@ -5,8 +13,35 @@
 >curl http://localhost:8081/adserver/info
 
 
->curl http://localhost:8081/ad
+### To create sample campaign
 
+>curl -X GET http://localhost:8081/adserver/ad
+
+
+### To list all campaigns
+
+>curl -X GET -H "Content-type: application/json" -H "Accept: application/json"  "http://localhost:8081/adserver/ad/campaign/listall"
+
+
+### To list a partner ad
+
+>curl -X GET -H "Content-type: application/json" -H "Accept: application/json"  "http://localhost:8081/adserver/ad/campaign/Sample
+
+### To insert a partner ad
+
+>curl -H "Content-Type: application/json" -X POST -d '{"username":"xyz","password":"xyz"}' http://localhost:8081/adserver/ad/campaign
+
+### To update a partner ad
+
+>curl -H "Content-Type: application/json" -X PUT -d '{"username":"xyz","password":"xyz"}' http://localhost:8081/adserver/ad/campaign/Sample
+
+### To delete a partner ad
+
+>curl -H "Content-Type: application/json" -X DELETE -d '{"username":"xyz","password":"xyz"}' http://localhost:8081/adserver/ad/campaign/Sample
+
+
+
+>curl -X POST -H "Content-type: application/json" -H "Accept: application/json"  "http://localhost:8081/adserver/ad/Comcast/{"param0":"pradeep"}"
 
 ## GITHUB ASSESSMENT FOR SMART INTERNET PROJECT:
 

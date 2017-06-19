@@ -13,7 +13,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,17 +28,18 @@ public class CampaignController {
 	
 	@Autowired
 	private AdServiceImpl adService;
-	
-	@GET
-	public String home() {
-		return "You have reached the Campaigns Home";
-	}
 
 	Logger logger = Logger.getLogger("CampaignController");
 	
+	@GET
+	public Response home() {
+		adService.createCampaign();
+		return Response.ok().entity("You have reached the Campaigns Home").build();
+	}
+	
 	/** 
-	 * listAllAdCampaigns - List all the campaigns.
-	 * @return
+	 * listAllAdCampaigns - List all active campaigns.
+	 * @return Response
 	 */
 	@GET
 	@Path("/campaign")
@@ -51,6 +51,11 @@ public class CampaignController {
 		return Response.ok().entity(adList).build();
 	}
 
+	/**
+	 * getAd - Gets an active ad for a partner.
+	 * @param partner
+	 * @return Response
+	 */
 	@GET
 	@Path("/campaign/{partner}")
 	public Response getAd(@PathParam("partner") String partner) {
@@ -63,6 +68,11 @@ public class CampaignController {
         return Response.ok().entity(ad).build();
     }
 	
+	/**
+	 * createAd - Creates a new Ad based on input
+	 * @param ad
+	 * @return Response
+	 */
 	@POST
 	@Path("/campaign")
 	public Response createAd (Ad ad) {
@@ -80,6 +90,12 @@ public class CampaignController {
         	return Response.serverError().entity("Server Error Occurred during add").build();
     }
 	
+	/**
+	 * updateAd - updates a partner ad.
+	 * @param partner
+	 * @param ad
+	 * @return Response
+	 */
 	@PUT
 	@Path("/campaign/{partner}")
 	public Response updateAd (@PathParam("partner") String partner, Ad ad) { 
@@ -99,6 +115,12 @@ public class CampaignController {
         	return Response.serverError().entity("Server Error Occurred during update").build();        
     }
 	
+	/**
+	 * deleteAd - Deletes a partner ad.
+	 * @param partner
+	 * @param ad
+	 * @return Response
+	 */
 	@DELETE
 	@Path("/campaign/{partner}")
 	public Response deleteAd(@PathParam("partner") String partner, Ad ad) {
@@ -110,20 +132,22 @@ public class CampaignController {
             return Response.notModified().entity("Ad for partner " + partner + " not found").build();
         }
         
-        Status statusInfo = adService.deleteAd(partner, ad);
-        if (statusInfo == Status.OK)
+        if (adService.deleteAd(partner, ad))
         	return Response.ok().entity(adService.getAdByPartner(partner)).build();
         else
         	return Response.serverError().entity("Server Error Occurred during delete").build();   
     }
 	
+	/**
+	 * deleteAllAdCampaigns - deletes all active ad's
+	 * @return Response
+	 */
 	@DELETE
 	@Path("/init")
 	public Response deleteAllAdCampaigns() {
 		logger.info("Deleting All Ad Campaigns");
  
-        Status statusInfo =  adService.deleteAllCampaigns();
-        if (statusInfo == Status.OK)
+        if (adService.deleteAllCampaigns())
         	return Response.noContent().build();
         else
         	return Response.serverError().entity("Server Error Occurred").build();  

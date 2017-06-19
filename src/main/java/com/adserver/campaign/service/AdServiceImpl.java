@@ -30,6 +30,11 @@ public class AdServiceImpl implements AdService {
 	AdRepositoryImpl adRepository;
 	
 	@Override
+	public void createCampaign() {
+		adRepository.createCampaign();
+	}
+	
+	@Override
 	public Collection<Ad> listAllAdCampaigns() {
 		return adRepository.listAllAdCampaigns();
 	}
@@ -49,6 +54,9 @@ public class AdServiceImpl implements AdService {
 	        LocalDateTime creationDate = LocalDateTime.parse(currentAd.getCreationTime(), formatter);
 			
 			Duration duration = Duration.between(creationDate, currentDate);
+			logger.info("First date: " + creationDate + ", currentDate: " + currentDate); 
+			logger.info("Duration: " + duration.getSeconds() + ", present ad duration: " + currentAd.getDuration());
+			logger.info("duration.getSeconds() > currentAd.getDuration() : " + (duration.getSeconds() > currentAd.getDuration()));
 			if (duration.getSeconds() > currentAd.getDuration())  
 				return false;
 			else
@@ -76,18 +84,12 @@ public class AdServiceImpl implements AdService {
 	}
 	
 	@Override
-	public Status deleteAd(String partner, Ad ad) {        
-		if (adRepository.deleteAd(partner, ad))
-			return Status.NO_CONTENT;
-		else
-			return Status.INTERNAL_SERVER_ERROR;  
+	public boolean deleteAd(String partner, Ad ad) {        
+		return adRepository.deleteAd(partner, ad);  
 	}
 	
 	@Override
-	public Status deleteAllCampaigns() {
-		if (adRepository.deleteAllAdCampaigns())
-			return Status.NO_CONTENT;
-		else
-			return Status.INTERNAL_SERVER_ERROR;  
+	public boolean deleteAllCampaigns() {
+		return adRepository.deleteAllAdCampaigns(); 
 	}
 }

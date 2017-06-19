@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Suite" parallel="false">
+  <!-- <test name="Unit Tests">
+    <classes>
+      <class name="com.adserver.campaign.AdserverCampaignControllerUnitTest"/>
+    </classes>
+   </test>  
+   <test name="Mock Unit Tests">
+    <classes>
+      <class name="com.adserver.campaign.AdserverMockCampaignControllerUnitTest"/>
+    </classes>
+   </test> -->
+	 <test name="Integration Tests" preserve-order="true">
+	  <classes>
+	   <class name="com.adserver.campaign.AdserverCampaignApplicationIntegrationTests" /> 
+	  </classes>     
+  </test> <!-- Integration Test -->
+</suite> <!-- Suite -->

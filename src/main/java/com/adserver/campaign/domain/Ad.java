@@ -10,20 +10,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.gson.Gson;
+
 /**
  * @author Athi
  *
  */
 @XmlRootElement
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Ad {
 	private long id;
 	private String partner;
 	private long duration;
 	private String content;
 	@Autowired(required=false)
-	private String creationTime;
+	private transient String creationTime;
 	@Autowired(required=false)
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	private transient DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	
 	public Ad() {
 		super();
@@ -76,8 +80,9 @@ public class Ad {
 	}
 	@Override
 	public String toString() {
-		return "Ad [id=" + id + ", " + (partner != null ? "partner=" + partner + ", " : "") + "duration=" + duration
+		return new Gson().toJson(new Ad(id, partner, duration, content), Ad.class);
+		/*return "Ad [id=" + id + ", " + (partner != null ? "partner=" + partner + ", " : "") + "duration=" + duration
 				+ ", " + (creationTime != null ? "creationTime=" + creationTime + ", " : "")
-				+ (content != null ? "content=" + content : "") + "]";
+				+ (content != null ? "content=" + content : "") + "]";*/
 	}
 }

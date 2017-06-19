@@ -5,8 +5,6 @@ package com.adserver.campaign.service;
 
 import java.util.Collection;
 
-import javax.ws.rs.core.Response.Status;
-
 import com.adserver.campaign.domain.Ad;
 
 /**
@@ -14,6 +12,8 @@ import com.adserver.campaign.domain.Ad;
  *
  */
 public interface AdService {
+	void createCampaign(); 
+	
     Collection<Ad> listAllAdCampaigns();
 
     Ad getAdByPartner(String partner);
@@ -22,9 +22,9 @@ public interface AdService {
     
     Ad updateAd(String partner, Ad ad);
     
-    Status deleteAd(String partner, Ad ad);
+    boolean deleteAd(String partner, Ad ad);
     
-    Status deleteAllCampaigns();
+    boolean deleteAllCampaigns();
 
 	boolean isAnAdActiveForPartner(String partner);
 
